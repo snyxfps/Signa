@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+body {
+  @apply bg-cosmic-50 text-white;
+}
+
+.glass-card {
+  @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-2xl bg-white text-cosmic-100 font-semibold px-6 py-3;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 text-white px-6 py-3;
+}
+
+.gradient-text {
+  @apply bg-gradient-to-r from-cosmic-300 to-nebula-500 bg-clip-text text-transparent;
+}
+
+.score-bar-fill {
+  @apply bg-gradient-to-r from-cosmic-400 to-nebula-500;
+}
+
+.glass-card-hover {
+  @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur shadow-lg transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:border-white/20 hover:shadow-cosmic-500/20;
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 20px rgba(168, 85, 247, 0.4), 0 0 40px rgba(75, 75, 255, 0.2);
+}

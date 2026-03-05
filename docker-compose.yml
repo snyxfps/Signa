@@ -1,0 +1,94 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: signa
+      POSTGRES_USER: signa
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-signa123}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./signa-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 60
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.base
+      DATABASE_URL: postgresql://signa:${DB_PASSWORD:-signa123}@db:5432/signa
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      ALLOWED_HOSTS: localhost,backend
+      FRONTEND_URL: http://localhost:3000
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./signa-backend:/app
+      - media_data:/app/media
+
+  celery:
+    build:
+      context: ./signa-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: celery -A celery_app worker -l info -c 2
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.base
+      DATABASE_URL: postgresql://signa:${DB_PASSWORD:-signa123}@db:5432/signa
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./signa-backend:/app
+
+  celery-beat:
+    build:
+      context: ./signa-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: celery -A celery_app beat -l info
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.base
+      DATABASE_URL: postgresql://signa:${DB_PASSWORD:-signa123}@db:5432/signa
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./signa-backend:/app
+
+  frontend:
+    build:
+      context: ./signa-frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      API_URL: http://backend:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
+  media_data:

@@ -1,0 +1,65 @@
+# ─── BACKEND ───
+# Padrões do Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ambiente Virtual
+signa-backend/venv/
+signa-backend/env/
+signa-backend/ENV/
+signa-backend/.env
+
+# Banco de Dados Local
+db.sqlite3
+db.sqlite3-journal
+
+# Migrations cache
+*/migrations/0*.py
+!*/migrations/__init__.py
+
+# Build/Dist/Estatísticos
+signa-backend/staticfiles/
+signa-backend/media/
+signa-backend/build/
+signa-backend/dist/
+*.egg-info/
+
+# Logs
+*.log
+
+# ─── FRONTEND ───
+# Dependências do Node
+signa-frontend/node_modules/
+
+# Ambientes Locais
+signa-frontend/.env
+signa-frontend/.env.local
+signa-frontend/.env.development.local
+signa-frontend/.env.test.local
+signa-frontend/.env.production.local
+
+# Builds do Next.js
+signa-frontend/.next/
+signa-frontend/out/
+signa-frontend/build/
+signa-frontend/dist/
+
+# Vercel / NPM Logs
+.vercel/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ─── GERAL ───
+# IDE e Sistema Operacional
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
