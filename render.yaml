@@ -2,6 +2,7 @@ services:
   - type: web
     name: signa-backend
     env: python
+    rootDir: signa-backend
     buildCommand: "./build.sh"
     startCommand: "gunicorn config.wsgi:application"
     envVars:
@@ -27,6 +28,7 @@ services:
   - type: worker
     name: signa-celery
     env: python
+    rootDir: signa-backend
     buildCommand: "./build.sh"
     startCommand: "celery -A config worker --loglevel=info"
     envVars:
@@ -44,6 +46,7 @@ services:
   - type: worker
     name: signa-celery-beat
     env: python
+    rootDir: signa-backend
     buildCommand: "./build.sh"
     startCommand: "celery -A config beat -l INFO"
     envVars:
@@ -64,6 +67,6 @@ databases:
     databaseName: signa
     user: signa
 
-  - type: redis
-    name: signa-redis
+redises:
+  - name: signa-redis
     ipAllowList: [] # internal only
